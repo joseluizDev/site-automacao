@@ -1,161 +1,229 @@
-
 import {
-   Accordion,
-   AccordionDetails,
-   AccordionSummary,
-   Alert,
+   Avatar,
+   Badge,
    Box,
    Button,
    Card,
    CardContent,
-   Grid,
-   Snackbar,
-   TextField,
+   CardHeader,
+   IconButton,
    Typography
-} from '@mui/material';
-import React, { useState } from 'react';
+} from "@mui/material";
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import clsx from "clsx";
+import React, { useState } from "react";
+import { Tree, TreeNode } from "react-organizational-chart";
+import organization from "./org.json"; // Substitua por seu arquivo JSON atualizado
 
-const CadastroMensagens = () => {
-   const [mensagemPrincipal, setMensagemPrincipal] = useState('');
-   const [mensagens, setMensagens] = useState([]);
-   const [novaMensagem, setNovaMensagem] = useState('');
-   const [mensagemPaiId, setMensagemPaiId] = useState(null); // Armazena a ID da mensagem em que a nova mensagem será adicionada
-   const [openSnackbar, setOpenSnackbar] = useState(false);
-   const [mensagemSnackbar, setMensagemSnackbar] = useState('');
+const useStyles = styled((theme) => ({
+   root: {
+      background: "white",
+      display: "inline-block",
+      borderRadius: 16,
+      marginBottom: theme.spacing(2), // Adiciona espaçamento entre os cards
+      padding: theme.spacing(2),
+   },
+   expand: {
+      transform: "rotate(0deg)",
+      marginTop: -10,
+      marginLeft: "auto",
+      transition: theme.transitions.create("transform", {
+         duration: theme.transitions.duration.short,
+      }),
+   },
+   expandOpen: {
+      transform: "rotate(180deg)",
+   },
+   avatar: {
+      backgroundColor: "#ECECF4",
+   },
+   formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+   },
+   button: {
+      margin: theme.spacing(1),
+   },
+}));
 
-   // Função para adicionar a mensagem principal
-   const adicionarMensagemPrincipal = () => {
-      if (!mensagemPrincipal) {
-         setMensagemSnackbar('Por favor, insira a mensagem principal.');
-         setOpenSnackbar(true);
-         return;
-      }
-      setMensagens([{ id: 1, texto: mensagemPrincipal, subMensagens: [] }]);
-      setMensagemPrincipal('');
-      setMensagemSnackbar('Mensagem principal adicionada com sucesso!');
-      setOpenSnackbar(true);
+// Componente Organization que renderiza cada nó da árvore
+function Organization({ org, onCollapse, collapsed, onAddSubMessage }) {
+   const classes = useStyles();
+   let backgroundColor = "white";
+
+   return (
+      <Card
+         variant="outlined"
+         className={classes.root}
+         style={{ backgroundColor }}
+      >
+         <CardHeader
+            avatar={
+               <Badge
+                  style={{ cursor: "pointer" }}
+                  color="secondary"
+                  anchorOrigin={{
+                     vertical: "bottom",
+                     horizontal: "right",
+                  }}
+                  showZero
+                  overlap="circle"
+                  onClick={onCollapse}
+               >
+                  <Avatar className={classes.avatar}>{org.numero}</Avatar>
+               </Badge>
+            }
+            title={
+               <div style={{ display: "flex", alignItems: "center" }}>
+                  <Typography variant="h6">{org.mensagem}</Typography>
+               </div>
+            }
+         />
+         <CardContent>
+            <IconButton
+               size="small"
+               onClick={onCollapse}
+               className={clsx(classes.expand, {
+                  [classes.expandOpen]: !collapsed,
+               })}
+            >
+               {org.SubMensagens ? <div>mais</div> : null}
+            </IconButton>
+            <Button
+               variant="text"
+               onClick={() => onAddSubMessage(org)}
+               className={classes.button}
+            >
+               Adicionar Submensagem
+            </Button>
+         </CardContent>
+      </Card>
+   );
+}
+
+// Componente recursivo Node que lida com a renderização da árvore e subárvore
+function Node({ o, parent, onAddSubMessage }) {
+   const [collapsed, setCollapsed] = React.useState(o.collapsed);
+
+   const handleCollapse = () => {
+      setCollapsed(!collapsed);
    };
 
-   // Função recursiva para adicionar uma nova sub-mensagem em qualquer nível
-   const adicionarSubMensagem = (mensagens, idPai, novaMsg) => {
-      return mensagens.map((mensagem) => {
-         if (mensagem.id === idPai) {
-            return {
-               ...mensagem,
-               subMensagens: [
-                  ...mensagem.subMensagens,
-                  { id: new Date().getTime(), texto: novaMsg, subMensagens: [] }
-               ]
-            };
-         } else if (mensagem.subMensagens.length > 0) {
-            return {
-               ...mensagem,
-               subMensagens: adicionarSubMensagem(mensagem.subMensagens, idPai, novaMsg)
-            };
+   React.useEffect(() => {
+      o.collapsed = collapsed;
+   }, [collapsed, o]);
+
+   const T = parent
+      ? TreeNode
+      : (props) => (
+         <Tree
+            {...props}
+            lineWidth={"2px"}
+            lineColor={"#bbc"}
+            lineBorderRadius={"12px"}
+         >
+            {props.children}
+         </Tree>
+      );
+
+   const childNodes = o.SubMensagens || [];
+
+   return (
+      <T
+         label={
+            <Organization
+               org={o}
+               onCollapse={handleCollapse}
+               collapsed={collapsed}
+               onAddSubMessage={onAddSubMessage}
+            />
          }
-         return mensagem;
-      });
-   };
+      >
+         {!collapsed &&
+            childNodes.map((child, index) => (
+               <Node key={index} o={child} parent={o} onAddSubMessage={onAddSubMessage} />
+            ))}
+      </T>
+   );
+}
 
-   // Função para disparar o processo de adicionar sub-mensagem
-   const handleAdicionarSubMensagem = () => {
-      if (!novaMensagem || mensagemPaiId === null) {
-         setMensagemSnackbar('Por favor, insira uma sub-mensagem e selecione uma mensagem pai.');
-         setOpenSnackbar(true);
-         return;
+// Tema personalizado utilizando MUI's createTheme
+const theme = createTheme({
+   palette: {
+      primary: {
+         main: "#1976d2",
+      },
+      secondary: {
+         main: "#dc004e",
+      },
+      background: {
+         default: "#ECECF4",
+      },
+   },
+   typography: {
+      fontFamily: "Roboto, sans-serif",
+      button: {
+         textTransform: "none",
+      },
+   },
+});
+
+// Componente principal CadastroMensagens
+export default function CadastroMensagens() {
+   const [visibleNodes, setVisibleNodes] = useState([
+      {
+         numero: 0,
+         mensagem: organization.MensagemPrincipal,
+         SubMensagens: organization.Mensagens,
+         collapsed: false,
+      },
+   ]);
+   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+   // Função para adicionar um novo nó à árvore
+   const handleAddNode = () => {
+      if (visibleNodes.length < organization.Mensagens.length + 1) {
+         setVisibleNodes((prevNodes) => [
+            ...prevNodes,
+            organization.Mensagens[prevNodes.length],
+         ]);
+         setSnackbarOpen(true);
       }
-
-      setMensagens(adicionarSubMensagem(mensagens, mensagemPaiId, novaMensagem));
-      setNovaMensagem('');
-      setMensagemPaiId(null);
-      setMensagemSnackbar('Sub-mensagem adicionada com sucesso!');
-      setOpenSnackbar(true);
    };
 
-   // Função recursiva para renderizar mensagens com sub-mensagens aninhadas
-   const renderizarMensagens = (mensagens) => {
-      return mensagens.map((mensagem) => (
-         <Accordion key={mensagem.id} sx={{ marginBottom: 2 }}>
-            <AccordionSummary expandIcon="+" aria-controls="panel1a-content" id="panel1a-header">
-               <Typography>{mensagem.texto}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-               <Card sx={{ marginBottom: 2 }}>
-                  <CardContent>
-                     {/* Exibir as sub-mensagens, se houver */}
-                     {mensagem.subMensagens.length > 0 && (
-                        <Box sx={{ marginLeft: 2 }}>
-                           {renderizarMensagens(mensagem.subMensagens)}
-                        </Box>
-                     )}
+   // Função para adicionar uma submensagem ao nó
+   const handleAddSubMessage = (node) => {
+      const newSubMessage = {
+         numero: (node.SubMensagens?.length || 0) + 1,
+         mensagem: "Nova Submensagem",
+      };
+      node.SubMensagens = [...(node.SubMensagens || []), newSubMessage];
+      setVisibleNodes([...visibleNodes]);
+   };
 
-                     <TextField
-                        label="Nova Sub-Mensagem"
-                        fullWidth
-                        sx={{ marginTop: 2 }}
-                        value={mensagemPaiId === mensagem.id ? novaMensagem : ''}
-                        onClick={() => setMensagemPaiId(mensagem.id)}
-                        onChange={(e) => setNovaMensagem(e.target.value)}
-                     />
-                     <Button
-                        variant="contained"
-                        sx={{ marginTop: 2 }}
-                        fullWidth
-                        onClick={handleAdicionarSubMensagem}
-                     >
-                        Adicionar Sub-Mensagem
-                     </Button>
-                  </CardContent>
-               </Card>
-            </AccordionDetails>
-         </Accordion>
-      ));
+   // Função para fechar o Snackbar
+   const handleSnackbarClose = () => {
+      setSnackbarOpen(false);
    };
 
    return (
-      <Box sx={{ padding: 4 }}>
-         <Typography variant="h4" gutterBottom>
-            Cadastro de Mensagens Automatizadas
-         </Typography>
+      <ThemeProvider theme={theme}>
+         <Box bgcolor="background.default" padding={4} height="80vh">
+            {/* Renderiza a árvore de mensagens com a MensagemPrincipal no topo */}
+            <Tree lineWidth={"2px"} lineColor={"#bbc"} lineBorderRadius={"12px"}>
+               {visibleNodes.map((node, index) => (
+                  <Node key={index} o={node} onAddSubMessage={handleAddSubMessage} />
+               ))}
+            </Tree>
 
-         {!mensagens.length && (
-            <Grid container spacing={2}>
-               <Grid item xs={12}>
-                  <TextField
-                     label="Mensagem Principal"
-                     fullWidth
-                     value={mensagemPrincipal}
-                     onChange={(e) => setMensagemPrincipal(e.target.value)}
-                  />
-               </Grid>
-               <Grid item xs={12}>
-                  <Button variant="contained" onClick={adicionarMensagemPrincipal} fullWidth>
-                     Adicionar Mensagem Principal
-                  </Button>
-               </Grid>
-            </Grid>
-         )}
+            {visibleNodes.length < organization.Mensagens.length + 1 && (
+               <Button variant="contained" color="primary" onClick={handleAddNode} className={useStyles().button}>
+                  Adicionar Card
+               </Button>
+            )}
 
-         {mensagens.length > 0 && (
-            <Box mt={4}>
-               <Typography variant="h5" gutterBottom>
-                  Mensagens no Fluxo
-               </Typography>
-               {renderizarMensagens(mensagens)}
-            </Box>
-         )}
 
-         <Snackbar
-            open={openSnackbar}
-            autoHideDuration={4000}
-            onClose={() => setOpenSnackbar(false)}
-         >
-            <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
-               {mensagemSnackbar}
-            </Alert>
-         </Snackbar>
-      </Box>
+         </Box>
+      </ThemeProvider>
    );
-};
-
-export default CadastroMensagens;
+}
