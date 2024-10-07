@@ -1,184 +1,148 @@
+/*************  ✨ Codeium Command 🌟  *************/
 import {
-   Alert,
    Box,
    Button,
    Card,
    CardContent,
-   FormControl,
+   CardHeader,
    Grid,
-   InputLabel,
-   MenuItem,
-   Select,
-   Snackbar,
+   IconButton,
    TextField,
    Typography
-} from '@mui/material';
-import React, { useState } from 'react';
+} from "@mui/material";
+import { IconTrash } from "@tabler/icons-react";
+import React, { useState } from "react";
 
-const CadastroMensagens = () => {
-   const [fluxo, setFluxo] = useState({
-      nomeFluxo: '',
-      descricao: '',
-      mensagens: []
-   });
-   const [novaMensagem, setNovaMensagem] = useState('');
-   const [openSnackbar, setOpenSnackbar] = useState(false);
-   const [mensagemSnackbar, setMensagemSnackbar] = useState('');
-   const [mensagemSelecionada, setMensagemSelecionada] = useState(null);
+const PedidoForm = () => {
+   const [categorias, setCategorias] = useState([]);
+   const [categoriaAtual, setCategoriaAtual] = useState("");
+   const [produtoAtual, setProdutoAtual] = useState({ nome: "", quantidade: "" });
 
-   // Função para adicionar uma nova mensagem principal ou secundária
-   const adicionarMensagem = () => {
-      if (!novaMensagem) {
-         setMensagemSnackbar('Por favor, insira uma mensagem.');
-         setOpenSnackbar(true);
-         return;
+   const handleCategoriaChange = (e) => {
+      setCategoriaAtual(e.target.value);
+   };
+
+   const handleAddCategoria = () => {
+      if (categoriaAtual && !categorias.some((cat) => cat.nome === categoriaAtual)) {
+         setCategorias([...categorias, { nome: categoriaAtual, produtos: [] }]);
+         setCategoriaAtual("");
       }
+   };
 
-      const novaMsg = {
-         idMensagem: fluxo.mensagens.length + 1,
-         textoMensagem: novaMensagem,
-         opcoesResposta: [],
-         proximaMensagens: []
+   const handleProdutoChange = (e) => {
+      const { name, value } = e.target;
+      setProdutoAtual({ ...produtoAtual, [name]: value });
+   };
+
+   const handleAddProduto = (categoriaIndex) => {
+      if (produtoAtual.nome && produtoAtual.quantidade) {
+         if (produtoAtual.nome && produtoAtual.quantidade) {
+            const updatedCategorias = [...categorias];
+            updatedCategorias[categoriaIndex].produtos.push({ ...produtoAtual });
+            setCategorias(updatedCategorias);
+            setProdutoAtual({ nome: "", quantidade: "" });
+         }
       };
 
-      setFluxo({
-         ...fluxo,
-         mensagens: [...fluxo.mensagens, novaMsg]
-      });
-
-      setNovaMensagem('');
-      setMensagemSnackbar('Mensagem adicionada com sucesso!');
-      setOpenSnackbar(true);
-   };
-
-   // Função para adicionar uma resposta a uma mensagem específica
-   const adicionarResposta = (idMensagem, resposta, proximaMensagem) => {
-      setFluxo({
-         ...fluxo,
-         mensagens: fluxo.mensagens.map((msg) =>
-            msg.idMensagem === idMensagem
-               ? {
-                  ...msg,
-                  opcoesResposta: [...msg.opcoesResposta, resposta],
-                  proximaMensagens: [...msg.proximaMensagens, proximaMensagem]
-               }
-               : msg
-         )
-      });
-
-      setMensagemSnackbar('Resposta adicionada e vinculada com sucesso!');
-      setOpenSnackbar(true);
-   };
-
-   return (
-      <Box sx={{ padding: 4 }}>
-         <Typography variant="h4" gutterBottom>
-            Cadastro de Mensagens Automatizadas
-         </Typography>
-
-         <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-            <Grid item xs={12} sm={6}>
-               <TextField
-                  label="Nome do Fluxo"
-                  fullWidth
-                  value={fluxo.nomeFluxo}
-                  onChange={(e) => setFluxo({ ...fluxo, nomeFluxo: e.target.value })}
-               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-               <TextField
-                  label="Descrição do Fluxo"
-                  fullWidth
-                  value={fluxo.descricao}
-                  onChange={(e) => setFluxo({ ...fluxo, descricao: e.target.value })}
-               />
-            </Grid>
-         </Grid>
-
-         <Grid container spacing={2}>
-            <Grid item xs={12}>
-               <TextField
-                  label="Mensagem"
-                  fullWidth
-                  value={novaMensagem}
-                  onChange={(e) => setNovaMensagem(e.target.value)}
-               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-               <Button variant="contained" onClick={adicionarMensagem} fullWidth>
-                  Adicionar Mensagem
-               </Button>
-            </Grid>
-         </Grid>
-
-         <Box mt={4}>
-            <Typography variant="h5" gutterBottom>
-               Mensagens no Fluxo
+      return (
+         <Box sx={{ padding: 2 }}>
+            <Typography variant="h4" gutterBottom>
+               Categorias e Produtos
             </Typography>
-            <Grid container spacing={3}>
-               {fluxo.mensagens.map((mensagem) => (
-                  <Grid item xs={12} sm={6} key={mensagem.idMensagem}>
-                     <Card>
-                        <CardContent>
-                           <Typography variant="h6">{mensagem.textoMensagem}</Typography>
 
-                           {mensagem.opcoesResposta.map((opcao, idx) => (
-                              <Typography key={idx}>
-                                 {opcao} → Próxima Mensagem: {mensagem.proximaMensagens[idx]?.textoMensagem || 'Nenhuma'}
+            {categorias.length > 0 && (
+               <Box sx={{ marginBottom: 3 }}>
+                  {categorias.map((categoria, categoriaIndex) => (
+                     <Card key={categoriaIndex} sx={{ marginBottom: 3, boxShadow: 3, borderRadius: 2 }}>
+                        <CardHeader
+                           title={
+                              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                                 {categoria.nome}
                               </Typography>
-                           ))}
+                           }
+                           action={
+                              <IconButton onClick={() => {
+                                 const updatedCategorias = categorias.filter((_, index) => index !== categoriaIndex);
+                                 setCategorias(updatedCategorias);
+                              }}>
+                                 <IconTrash size={24} />
+                              </IconButton>
+                           }
+                        />
+                        <CardContent>
+                           <Grid container spacing={2} alignItems="center">
+                              <Grid item xs={3}>
+                                 <TextField
+                                    label="Nome do Produto"
+                                    name="nome"
+                                    value={produtoAtual.nome}
+                                    onChange={handleProdutoChange}
+                                    fullWidth
+                                 />
+                              </Grid>
 
-                           <FormControl fullWidth sx={{ mt: 2 }}>
-                              <TextField
-                                 label="Adicionar Resposta"
-                                 value={mensagemSelecionada?.resposta || ''}
-                                 onChange={(e) => setMensagemSelecionada({ ...mensagemSelecionada, resposta: e.target.value })}
-                              />
-                           </FormControl>
+                              <Grid item xs={3}>
+                                 <TextField
+                                    label="Quantidade"
+                                    name="quantidade"
+                                    value={produtoAtual.quantidade}
+                                    onChange={handleProdutoChange}
+                                    fullWidth
+                                 />
+                              </Grid>
+                              <Grid item xs={3}>
+                                 <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleAddProduto(categoriaIndex)}
+                                    fullWidth
+                                 >
+                                    Adicionar Pedido
+                                 </Button>
+                              </Grid>
+                           </Grid>
+                           <Box sx={{ marginTop: 2 }}>
+                              {categoria.produtos.length > 0 ? (
+                                 categoria.produtos.map((produto, produtoIndex) => (
+                                    <Card key={produtoIndex} sx={{ marginTop: 1, padding: 1, boxShadow: 1, borderRadius: 1 }}>
+                                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                                          {produto.nome}
+                                       </Typography>
 
-                           <FormControl fullWidth sx={{ mt: 2 }}>
-                              <InputLabel>Próxima Mensagem</InputLabel>
-                              <Select
-                                 value={mensagemSelecionada?.proximaMensagemId || ''}
-                                 onChange={(e) => setMensagemSelecionada({ ...mensagemSelecionada, proximaMensagemId: e.target.value })}
-                              >
-                                 {fluxo.mensagens.map((msg) => (
-                                    <MenuItem key={msg.idMensagem} value={msg.idMensagem}>
-                                       {msg.textoMensagem}
-                                    </MenuItem>
-                                 ))}
-                              </Select>
-                           </FormControl>
-
-                           <Button
-                              variant="contained"
-                              sx={{ mt: 2 }}
-                              fullWidth
-                              onClick={() => {
-                                 adicionarResposta(
-                                    mensagem.idMensagem,
-                                    mensagemSelecionada?.resposta,
-                                    fluxo.mensagens.find((msg) => msg.idMensagem === mensagemSelecionada?.proximaMensagemId)
-                                 );
-                                 setMensagemSelecionada(null);
-                              }}
-                           >
-                              Adicionar Resposta e Vincular
-                           </Button>
+                                       <Typography variant="body2">
+                                          Quantidade: {produto.quantidade}
+                                       </Typography>
+                                    </Card>
+                                 ))
+                              ) : (
+                                 <Typography variant="body2">Nenhum pedido adicionado</Typography>
+                              )}
+                           </Box>
                         </CardContent>
                      </Card>
+                  ))}
+               </Box>
+            )}
+
+            <Box sx={{ marginBottom: 3 }}>
+               <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={8}>
+                     <TextField
+                        label="Nome do Card"
+                        value={categoriaAtual}
+                        onChange={handleCategoriaChange}
+                        fullWidth
+                     />
                   </Grid>
-               ))}
-            </Grid>
+                  <Grid item xs={4}>
+                     <Button variant="contained" color="primary" onClick={handleAddCategoria} fullWidth>
+                        Novo Card
+                     </Button>
+                  </Grid>
+               </Grid>
+            </Box>
          </Box>
-
-         <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)}>
-            <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
-               {mensagemSnackbar}
-            </Alert>
-         </Snackbar>
-      </Box>
-   );
-};
-
-export default CadastroMensagens;
+      );
+   };
+}
+export default PedidoForm;
