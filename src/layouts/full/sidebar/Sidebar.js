@@ -8,11 +8,9 @@ const MSidebar = (props) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const sidebarWidth = '270px';
 
-  // Custom CSS for short scrollbar
   const scrollbarStyles = {
     '&::-webkit-scrollbar': {
       width: '7px',
-
     },
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: '#eff2f7',
@@ -29,9 +27,6 @@ const MSidebar = (props) => {
           flexShrink: 0,
         }}
       >
-        {/* ------------------------------------------- */}
-        {/* Sidebar for desktop */}
-        {/* ------------------------------------------- */}
         <Drawer
           anchor="left"
           open={props.isSidebarOpen}
@@ -43,15 +38,11 @@ const MSidebar = (props) => {
             },
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar Box */}
-          {/* ------------------------------------------- */}
           <Box
             sx={{
               height: '100%',
             }}
           >
-
             <Sidebar
               width={'270px'}
               collapsewidth="80px"
@@ -60,16 +51,9 @@ const MSidebar = (props) => {
               themeSecondaryColor="#49beff"
               showProfile={false}
             >
-              {/* ------------------------------------------- */}
-              {/* Logo */}
-              {/* ------------------------------------------- */}
               <Logo
-
                 img={'https://static.whatsapp.net/rsrc.php/yZ/r/JvsnINJ2CZv.svg'} />
               <Box>
-                {/* ------------------------------------------- */}
-                {/* Sidebar Items */}
-                {/* ------------------------------------------- */}
                 <SidebarItems />
                 <Upgrade />
               </Box>
@@ -87,7 +71,6 @@ const MSidebar = (props) => {
       variant="temporary"
       PaperProps={{
         sx: {
-
           boxShadow: (theme) => theme.shadows[8],
           ...scrollbarStyles,
         },
@@ -103,15 +86,7 @@ const MSidebar = (props) => {
         themeSecondaryColor="#49beff"
         showProfile={false}
       >
-        {/* ------------------------------------------- */}
-        {/* Logo */}
-        {/* ------------------------------------------- */}
-
         <Logo img={'https://static.whatsapp.net/rsrc.php/yZ/r/JvsnINJ2CZv.svg'} />
-
-        {/* ------------------------------------------- */}
-        {/* Sidebar For Mobile */}
-        {/* ------------------------------------------- */}
         <SidebarItems />
         <Upgrade />
       </Sidebar>

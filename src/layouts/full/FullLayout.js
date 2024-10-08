@@ -44,7 +44,6 @@ const FullLayout = () => {
           minWidth: '90%',
         }}
         >
-
           <Outlet
           />
         </Container>

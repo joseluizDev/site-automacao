@@ -14,12 +14,10 @@ const SalesOverview = () => {
         setMonth(event.target.value);
     };
 
-    // chart color
     const theme = useTheme();
     const primary = theme.palette.primary.main;
     const secondary = theme.palette.secondary.main;
 
-    // chart
     const optionscolumnchart = {
         chart: {
             type: 'bar',
@@ -91,6 +89,7 @@ const SalesOverview = () => {
     return (
 
         <DashboardCard title="Mensasgem" subtitle="Mensagens enviadas e recebidas por dia"
+
             action={
                 <Select
                     labelId="month-dd"

@@ -1,9 +1,9 @@
-import React from 'react';
-import Menuitems from './MenuItems';
-import { useLocation } from 'react-router';
 import { Box, List } from '@mui/material';
-import NavItem from './NavItem';
+import React from 'react';
+import { useLocation } from 'react-router';
+import Menuitems from './MenuItems';
 import NavGroup from './NavGroup/NavGroup';
+import NavItem from './NavItem';
 
 const SidebarItems = () => {
   const { pathname } = useLocation();
@@ -13,12 +13,8 @@ const SidebarItems = () => {
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
         {Menuitems.map((item) => {
-          // {/********SubHeader**********/}
           if (item.subheader) {
             return <NavGroup item={item} key={item.subheader} />;
-
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
           } else {
             return (
               <NavItem item={item} key={item.id} pathDirect={pathDirect} />

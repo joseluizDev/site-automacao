@@ -37,14 +37,20 @@ const Menuitems = [
   },
 
   {
+    id: uniqueId(),
+    title: 'Suporte',
+    icon: IconTablePlus,
+    href: '/ui/cadastro-suporte',
+  },
+  {
     navlabel: true,
     subheader: 'Extra',
   },
   {
     id: uniqueId(),
-    title: 'Sample Page',
+    title: 'Visualizar Agenda',
     icon: IconAperture,
-    href: '/sample-page',
+    href: '/ui/visualizar-agenda',
   },
   {
     id: uniqueId(),

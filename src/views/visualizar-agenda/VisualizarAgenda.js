@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import React from 'react';
 
 
-const SamplePage = () => {
+const VisualizarAgenda = () => {
   return (
     <div>
       <Typography variant="h1">Sample Page</Typography>
@@ -10,4 +10,4 @@ const SamplePage = () => {
   );
 };
 
-export default SamplePage;
+export default VisualizarAgenda;
