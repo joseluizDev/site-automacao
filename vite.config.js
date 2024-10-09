@@ -3,9 +3,7 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs/promises';
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
-// import svgr from 'vite-plugin-svgr'
 
-// https://vitejs.dev/config/
 export default defineConfig({
     resolve: {
         alias: {
@@ -13,8 +11,8 @@ export default defineConfig({
         },
     },
     esbuild: {
-        loader: 'jsx',
-        include: /src\/.*\.js?$/,
+        loader: 'jsx', // Ensure JSX is loaded properly
+        include: /src\/.*\.[jt]sx?$/, // Adjusted to include both .js and .jsx files
         exclude: [],
     },
     optimizeDeps: {
@@ -24,7 +22,7 @@ export default defineConfig({
                     name: 'load-js-files-as-jsx',
                     setup(build) {
                         build.onLoad(
-                            { filter: /src\\.*\.js$/ },
+                            { filter: /src\/.*\.[jt]sx?$/ }, // Adjusted filter to include .jsx and .js
                             async (args) => ({
                                 loader: 'jsx',
                                 contents: await fs.readFile(args.path, 'utf8'),
@@ -35,12 +33,5 @@ export default defineConfig({
             ],
         },
     },
-
-
-
-    // plugins: [react(),svgr({
-    //   exportAsDefault: true
-    // })],
-
     plugins: [svgr(), react()],
 });
