@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
-import fs from 'fs/promises';
 import svgr from '@svgr/rollup';
+import react from '@vitejs/plugin-react';
+import fs from 'fs/promises';
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
 // import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
@@ -13,7 +13,9 @@ export default defineConfig({
         },
     },
     esbuild: {
-        loader: 'jsx',
+        loader: {
+            '.js': 'jsx',
+        },
         include: /src\/.*\.jsx?$/,
         exclude: [],
     },
@@ -37,7 +39,7 @@ export default defineConfig({
     },
 
 
-    
+
     // plugins: [react(),svgr({
     //   exportAsDefault: true
     // })],
