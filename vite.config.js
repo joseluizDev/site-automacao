@@ -14,7 +14,7 @@ export default defineConfig({
     },
     esbuild: {
         loader: 'jsx',
-        include: /src\/.*\.jsx?$/,
+        include: /src\/.*\.js?$/,
         exclude: [],
     },
     optimizeDeps: {
@@ -26,7 +26,7 @@ export default defineConfig({
                         build.onLoad(
                             { filter: /src\\.*\.js$/ },
                             async (args) => ({
-                                loader: { '.js': 'jsx' },
+                                loader: 'jsx',
                                 contents: await fs.readFile(args.path, 'utf8'),
                             })
                         );
