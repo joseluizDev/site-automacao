@@ -15,15 +15,6 @@ export default defineConfig({
     esbuild: {
         loader: {
             'js': 'jsx',
-            'js': 'js',
-            'jsx': 'jsx',
-            'ts': 'ts',
-            'tsx': 'tsx',
-            'json': 'json',
-            'css': 'css',
-            'less': 'less',
-            'sass': 'sass',
-            'scss': 'scss',
         },
         include: /src\/.*\.jsx?$/,
         exclude: [],
