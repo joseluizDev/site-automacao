@@ -13,10 +13,10 @@ export default defineConfig({
         },
     },
     esbuild: {
-        loader: {
-            'js': 'jsx',
-        },
-        include: /src\/.*\.jsx?$/,
+        loader: 'jsx', // Isso força o Vite a interpretar JSX em arquivos .js
+        include: [
+            'src/**/*.js',
+        ],
         exclude: [],
     },
     optimizeDeps: {
