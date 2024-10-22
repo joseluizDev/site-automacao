@@ -1,3 +1,4 @@
+# Usa a imagem oficial do Node.js como base
 FROM node:23.0.0
 
 # Define o diretório de trabalho dentro do container
@@ -12,17 +13,14 @@ RUN npm install
 # Copia o restante do código da aplicação para o container
 COPY . .
 
-# Instala o Supervisor para gerenciar o processo Node.js
-RUN apt-get update && apt-get install -y supervisor
+# Constrói a aplicação React
+RUN npm run build
 
-# Cria o diretório para arquivos de configuração do Supervisor
-RUN mkdir -p /etc/supervisor/conf.d
+# Instala um servidor simples para servir o build do React (como 'serve')
+RUN npm install -g serve
 
-# Copia o arquivo de configuração do Supervisor para o container
-COPY supervisord.conf /etc/supervisor/conf.d/nodejs-server.conf
-
-# Expõe a porta na qual o Node.js está rodando (por exemplo, 3000)
+# Expõe a porta na qual o servidor vai rodar (por exemplo, 3000)
 EXPOSE 3000
 
-# Comando para iniciar o Supervisor
-CMD ["supervisord", "-n"]
+# Comando para iniciar o servidor e servir o build React
+CMD ["serve", "-s", "build", "-l", "3000"]
