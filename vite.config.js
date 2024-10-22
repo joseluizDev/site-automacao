@@ -10,16 +10,6 @@ export default defineConfig({
             src: resolve(__dirname, 'src'),
         },
     },
-    build: {
-      rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-        },
-      },
-    },
-       chunkSizeWarningLimit: 1000,
-    },
     esbuild: {
         loader: 'jsx', // Ensure JSX is loaded properly
         include: /src\/.*\.[jt]sx?$/, // Adjusted to include both .js and .jsx files
