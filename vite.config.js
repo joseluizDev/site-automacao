@@ -10,6 +10,9 @@ export default defineConfig({
             src: resolve(__dirname, 'src'),
         },
     },
+    build: {
+       chunkSizeWarningLimit: 1000,
+    },
     esbuild: {
         loader: 'jsx', // Ensure JSX is loaded properly
         include: /src\/.*\.[jt]sx?$/, // Adjusted to include both .js and .jsx files
