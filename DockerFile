@@ -1,29 +1,29 @@
-# Use a imagem base do Node.js
-FROM node:20
+# Use uma imagem base do Node.js
+FROM node:18
 
-# Defina o diretório de trabalho dentro do contêiner
-WORKDIR /app
+# Define o diretório de trabalho dentro do container
+WORKDIR /code
 
-# Copie o arquivo package.json e package-lock.json para o contêiner
+# Copia o package.json e o package-lock.json para o diretório de trabalho
 COPY package*.json ./
 
-# Instale as dependências
+# Instala as dependências do Node.js
 RUN npm install
 
-# Copie o restante dos arquivos do projeto para o contêiner
+# Copia o restante do código da aplicação para o container
 COPY . .
 
-# Construa a aplicação para produção
-RUN npm run build
+# Instala o Supervisor para gerenciar o processo Node.js
+RUN apt-get update && apt-get install -y supervisor
 
-# Use a imagem Nginx para servir a aplicação
-FROM nginx:1.23-alpine
+# Cria o diretório para arquivos de configuração do Supervisor
+RUN mkdir -p /etc/supervisor/conf.d
 
-# Copie os arquivos de build para o diretório padrão do Nginx
-COPY --from=0 /app/build /usr/share/nginx/html
+# Copia o arquivo de configuração do Supervisor para o container
+COPY supervisord.conf /etc/supervisor/conf.d/nodejs-server.conf
 
-# Exponha a porta 80 para o tráfego HTTP
-EXPOSE 8080
+# Expõe a porta na qual o Node.js está rodando (por exemplo, 3000)
+EXPOSE 3000
 
-# Comando para iniciar o Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para iniciar o Supervisor
+CMD ["supervisord", "-n"]
