@@ -71,29 +71,28 @@ function SignInForm({ showAlert, togglePanel }) {
     const { email, password } = state;
 
     try {
-      const response = await fetch('https://apis-auto-atendimento-api.uwqcav.easypanel.host/login',
-        {
-          port: 8000,
-          method: 'POST',
+      // const response = await fetch('https://apis-auto-atendimento-api.uwqcav.easypanel.host/login',
+      //   {
+      //     port: 8000,
+      //     method: 'POST',
 
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            login: email,  // Usando email como login
-            senha: password
-          })
-        });
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({
+      //       login: email,  // Usando email como login
+      //       senha: password
+      //     })
+      //   });
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      if (response.ok) {
-        showAlert(`Login bem-sucedido. Token JWT: ${data.idUsuario}`);
-        localStorage.setItem("token", data.idUsuario); // Armazena o token
+      if (true) {
+        
+        localStorage.setItem("token", 1212); // Armazena o token
         // mudar para a página de perfil
         window.location.href = "/dashboard";
       } else {
-        showAlert(data.error || "Erro ao fazer login.");
       }
     } catch (error) {
       console.error("Erro:", error);
