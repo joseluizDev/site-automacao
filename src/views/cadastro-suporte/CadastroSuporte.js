@@ -14,10 +14,7 @@ const CadastroSuporte = () => {
          sx={{
             margin: "auto",
             padding: "20px",
-            width: "100%",             
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            boxShadow: "0 2px 2px rgba(0, 0, 0, 0.2)"
+            width: "80%",
          }}
       >
          <Typography variant="h5" gutterBottom>
