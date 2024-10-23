@@ -12,12 +12,12 @@ const CadastroSuporte = () => {
          component="form"
          alignItems={"center"}
          sx={{
-            maxWidth: "800px",
             margin: "auto",
             padding: "20px",
-            backgroundColor: "#f9f9f9",
+            width: "100%",             
+            backgroundColor: "#ffffff",
             borderRadius: "8px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
+            boxShadow: "0 2px 2px rgba(0, 0, 0, 0.2)"
          }}
       >
          <Typography variant="h5" gutterBottom>
