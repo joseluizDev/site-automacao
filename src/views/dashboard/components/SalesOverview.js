@@ -23,9 +23,12 @@ const SalesOverview = () => {
             type: 'bar',
             fontFamily: "'Plus Jakarta Sans', sans-serif;",
             foreColor: '#adb0bb',
-            toolbar: {
-                show: true,
+           toolbar: {
+            show: true,
+            tools: {
+                download: false, // Disable the download option
             },
+        },
             height: 370,
         },
         colors: [primary, secondary],
