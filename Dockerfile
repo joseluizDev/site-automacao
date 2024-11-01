@@ -1,29 +1,30 @@
-# Etapa 1: Instalar dependências
+# Etapa 1: Instalação de Dependências
 FROM node:18-alpine AS dependencies
 WORKDIR /app
-COPY package.json package-lock.json* ./  # copia package.json e lock
-RUN npm install
+COPY package.json package-lock.json* ./
+RUN npm install --frozen-lockfile
 
-# Etapa 2: Compilar o código
+# Etapa 2: Compilação do Código
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY . .
+COPY . .   # Copia o código-fonte para o diretório de trabalho
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN npm run build
 
-# Etapa 3: Configurar o ambiente de produção
-FROM node:18-alpine AS runner
+# Etapa 3: Configuração do Ambiente de Produção
+FROM node:18-alpine AS production
 WORKDIR /app
 
+# Define a variável de ambiente para produção
 ENV NODE_ENV production
 
-# Copiar o código compilado do builder
+# Copia apenas os arquivos necessários para o ambiente de produção
 COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
-# Instalar dependências de produção
-RUN npm install --only=production
-
+# Exponha a porta que o Next.js vai rodar
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+# Define o comando padrão para iniciar a aplicação
+CMD ["npm", "start"]
