@@ -7,7 +7,7 @@ RUN npm install --frozen-lockfile
 # Etapa 2: Compilação do Código
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY . .   # Copia o código-fonte para o diretório de trabalho
+COPY . .  
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN npm run build
 
